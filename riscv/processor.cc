@@ -362,6 +362,7 @@ void state_t::reset(processor_t* const proc, reg_t max_isa)
   csrmap[CSR_TDATA3] = std::make_shared<const_csr_t>(proc, CSR_TDATA3, 0);
   debug_mode = false;
   profiler_mode = false;
+  bp_addr = ~0ull;
   single_step = STEP_NONE;
 
   for (int i=0; i < max_pmp; ++i) {

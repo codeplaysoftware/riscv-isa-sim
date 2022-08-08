@@ -176,6 +176,7 @@ struct state_t
   tdata2_csr_t_p tdata2;
   bool debug_mode;
   bool profiler_mode;
+  reg_t bp_addr;
 
   static const int max_pmp = 16;
   pmpaddr_csr_t_p pmpaddr[max_pmp];

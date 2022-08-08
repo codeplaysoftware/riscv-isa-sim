@@ -263,6 +263,11 @@ void processor_t::step(size_t n)
         // Main simulation loop, slow path.
         while (instret < n)
         {
+          if (unlikely(state.bp_addr == pc)) {
+            state.minstret->bump(instret);
+            state.mcycle->bump(instret);
+            return;
+          }
           if (unlikely(!state.serialized && state.single_step == state.STEP_STEPPED)) {
             state.single_step = state.STEP_NONE;
             if (!state.debug_mode) {
@@ -290,6 +295,11 @@ void processor_t::step(size_t n)
         // Main simulation loop, fast path.
         for (auto ic_entry = _mmu->access_icache(pc); ; ) {
           auto fetch = ic_entry->data;
+          if (unlikely(state.bp_addr == pc)) {
+            state.minstret->bump(instret);
+            state.mcycle->bump(instret);
+            return;
+          }
           pc = execute_insn(this, pc, fetch);
           ic_entry = ic_entry->next;
           if (unlikely(ic_entry->tag != pc))
