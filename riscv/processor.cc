@@ -7,6 +7,7 @@
 #include "config.h"
 #include "simif.h"
 #include "mmu.h"
+#include "profiler.h"
 #include "disasm.h"
 #include "platform.h"
 #include <cinttypes>
@@ -50,6 +51,8 @@ processor_t::processor_t(const isa_parser_t *isa, const char* varch,
   for (auto e : isa->get_extensions())
     register_extension(e.second);
 
+  profiler = new profiler_t();
+
   set_pmp_granularity(1 << PMP_SHIFT);
   set_pmp_num(state.max_pmp);
 
@@ -77,6 +80,7 @@ processor_t::~processor_t()
 
   delete mmu;
   delete disassembler;
+  delete profiler;
 }
 
 static void bad_option_string(const char *option, const char *value,
@@ -218,7 +222,8 @@ void state_t::reset(processor_t* const proc, reg_t max_isa)
     const reg_t which_counter = CSR_HPMCOUNTER3 + i - 3;
     const reg_t which_counterh = CSR_HPMCOUNTER3H + i - 3;
     auto mevent = std::make_shared<const_csr_t>(proc, which_mevent, 0);
-    auto mcounter = std::make_shared<const_csr_t>(proc, which_mcounter, 0);
+    auto mcounter = std::make_shared<basic_csr_t>(proc, which_mcounter, 0);
+    auto counter = std::make_shared<counter_proxy_csr_t>(proc, which_counter, mcounter);
     csrmap[which_mevent] = mevent;
     csrmap[which_mcounter] = mcounter;
 
@@ -356,6 +361,7 @@ void state_t::reset(processor_t* const proc, reg_t max_isa)
   csrmap[CSR_TDATA2] = tdata2 = std::make_shared<tdata2_csr_t>(proc, CSR_TDATA2);
   csrmap[CSR_TDATA3] = std::make_shared<const_csr_t>(proc, CSR_TDATA3, 0);
   debug_mode = false;
+  profiler_mode = false;
   single_step = STEP_NONE;
 
   for (int i=0; i < max_pmp; ++i) {

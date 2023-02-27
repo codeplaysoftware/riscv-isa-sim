@@ -24,6 +24,7 @@ class simif_t;
 class trap_t;
 class extension_t;
 class disassembler_t;
+class profiler_t;
 
 reg_t illegal_instruction(processor_t* p, insn_t insn, reg_t pc);
 
@@ -174,6 +175,7 @@ struct state_t
   csr_t_p tselect;
   tdata2_csr_t_p tdata2;
   bool debug_mode;
+  bool profiler_mode;
 
   static const int max_pmp = 16;
   pmpaddr_csr_t_p pmpaddr[max_pmp];
@@ -329,6 +331,7 @@ private:
   mmu_t* mmu; // main memory is always accessed via the mmu
   std::unordered_map<std::string, extension_t*> custom_extensions;
   disassembler_t* disassembler;
+  profiler_t *profiler;
   state_t state;
   uint32_t id;
   unsigned xlen;

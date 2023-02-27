@@ -2,6 +2,7 @@
 
 #include "processor.h"
 #include "mmu.h"
+#include "profiler.h"
 #include "disasm.h"
 #include <cassert>
 
@@ -215,7 +216,8 @@ static inline reg_t execute_insn(processor_t* p, reg_t pc, insn_fetch_t fetch)
 
 bool processor_t::slow_path()
 {
-  return debug || state.single_step != state.STEP_NONE || state.debug_mode;
+  return debug || state.single_step != state.STEP_NONE || state.debug_mode ||
+         state.profiler_mode;
 }
 
 // fetch/decode/execute loop
@@ -277,6 +279,8 @@ void processor_t::step(size_t n)
           insn_fetch_t fetch = mmu->load_insn(pc);
           if (debug && !state.serialized)
             disasm(fetch.insn);
+          if (state.profiler_mode)
+            profiler->run(*this, fetch.insn, xlen);
           pc = execute_insn(this, pc, fetch);
           advance_pc();
         }
