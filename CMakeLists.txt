@@ -1,0 +1,46 @@
+# Copyright (C) Codeplay Software Limited. All Rights Reserved.
+
+cmake_minimum_required(VERSION 3.0.0)
+
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  project(Spike VERSION 1.0.1)
+
+  if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+    message(FATAL_ERROR "In-tree builds are not supported")
+  endif()
+
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+endif()
+set(SPIKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(SPIKE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+# Generate config.h
+include(CheckIncludeFiles)
+include(CheckLibraryExists)
+check_include_files("inttypes.h" HAVE_INTTYPES_H)
+check_include_files("memory.h" HAVE_MEMORY_H)
+check_include_files("stdint.h" HAVE_STDINT_H)
+check_include_files("stdlib.h" HAVE_STDLIB_H)
+check_include_files("strings.h" HAVE_STRINGS_H)
+check_include_files("string.h" HAVE_STRING_H)
+check_include_files("sys/stat.h" HAVE_SYS_STAT_H)
+check_include_files("sys/types.h" HAVE_SYS_TYPES_H)
+check_include_files("unistd.h" HAVE_UNISTD_H)
+check_include_files("stdlib.h;stdarg.h;string.h;float.h" STDC_HEADERS)
+check_library_exists(pthread "pthread_create" "" HAVE_LIBPTHREAD)
+set(DEFAULT_ISA "RV64IMAFDC" CACHE STRING "Default value for --isa switch")
+set(DEFAULT_PRIV "MSU" CACHE STRING "Default value for --priv switch")
+set(DEFAULT_VARCH "vlen:128,elen:64,slen:128" CACHE STRING "Default value for --vector switch")
+set(DTC "dtc" CACHE STRING "Path to the device-tree-compiler")
+set(SOFTFLOAT_ENABLED 1)
+set(SPIKE_MAIN_ENABLED 1)
+set(RISCV_ENABLED 1)
+configure_file(cmake-config.h.in ${SPIKE_BINARY_DIR}/config.h)
+
+add_subdirectory(softfloat)
+add_subdirectory(fesvr)
+add_subdirectory(fdt)
+add_subdirectory(riscv)
+add_subdirectory(spike_main)
