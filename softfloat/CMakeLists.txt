@@ -1,5 +1,3 @@
-# Copyright (C) Codeplay Software Limited. All Rights Reserved.
-
 FILE(GLOB SOFTLOAT_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 
 add_library(softfloat STATIC ${SOFTLOAT_SRC_FILES})

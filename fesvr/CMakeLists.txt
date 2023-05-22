@@ -1,5 +1,3 @@
-# Copyright (C) Codeplay Software Limited. All Rights Reserved.
-
 add_library(fesvr
   STATIC
   context.cc

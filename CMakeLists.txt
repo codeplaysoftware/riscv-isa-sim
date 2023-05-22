@@ -1,5 +1,3 @@
-# Copyright (C) Codeplay Software Limited. All Rights Reserved.
-
 cmake_minimum_required(VERSION 3.0.0)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)

@@ -1,5 +1,3 @@
-# Copyright (C) Codeplay Software Limited. All Rights Reserved.
-
 # Compile all instructions.
 set(INSN_DIR ${CMAKE_CURRENT_BINARY_DIR}/insn)
 set(INSN_SOURCE_FILE ${INSN_DIR}/insns.cc)

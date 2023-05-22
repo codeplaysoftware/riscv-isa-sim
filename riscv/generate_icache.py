@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# Copyright (C) Codeplay Software Limited. All Rights Reserved.
-
 import sys
 import re
 

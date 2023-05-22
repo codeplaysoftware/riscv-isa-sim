@@ -1,5 +1,3 @@
-# Copyright (C) Codeplay Software Limited. All Rights Reserved.
-
 add_executable(spike
   spike.cc
 )
